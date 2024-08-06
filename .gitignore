@@ -1,0 +1,9 @@
+.vscode
+.dev.vars
+.wrangler
+node_modules/
+.DS_Store
+.env
+.venv
+package-lock.json
+package.json
