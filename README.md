@@ -16,7 +16,7 @@ This application synchronizes users between Chatwoot and Cloudflare Access, runn
 
 1. Clone this repository:
    ```
-   git clone https://github.com/your-username/chatwoot-cloudflare-sync.git
+   git clone https://github.com/conlabai/chatwoot-cloudflare-sync.git
    cd chatwoot-cloudflare-sync
    ```
 
