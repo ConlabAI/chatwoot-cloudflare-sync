@@ -1,6 +1,6 @@
 # Chatwoot-Cloudflare User Sync
 
-This application synchronizes users between Chatwoot and Cloudflare Access, running on Cloudflare Workers using Python. It performs the following tasks:
+This application synchronizes users between Chatwoot and Cloudflare Access, running in a Docker container. It performs the following tasks:
 
 1. Fetches users from Chatwoot
 2. Updates a Cloudflare Access group with active Chatwoot users
@@ -8,7 +8,7 @@ This application synchronizes users between Chatwoot and Cloudflare Access, runn
 
 ## Prerequisites
 
-- Cloudflare Workers account
+- Docker
 - Chatwoot instance with API access
 - Cloudflare Access configured
 
@@ -20,68 +20,59 @@ This application synchronizes users between Chatwoot and Cloudflare Access, runn
    cd chatwoot-cloudflare-sync
    ```
 
-2. Install Wrangler CLI:
+2. Create a `.env` file in the project root with the following content:
    ```
-   npm install -g @cloudflare/wrangler
-   ```
-
-3. Authenticate Wrangler with your Cloudflare account:
-   ```
-   wrangler login
-   ```
-
-4. Create a `wrangler.toml` file in the project root with the following content:
-   ```toml
-   name = "chatwoot-cloudflare-sync"
-   main = "src/entry.py"
-   compatibility_date = "2024-07-26"
-   compatibility_flags = ["python_workers"]
-
-   [vars]
-   CHATWOOT_URL = "https://your-chatwoot-instance.com"
-   CHATWOOT_ACCOUNT_ID = "your-chatwoot-account-id"
-   CLOUDFLARE_ACCOUNT_ID = "your-cloudflare-account-id"
-   CLOUDFLARE_ACCESS_GROUP_ID = "your-cloudflare-access-group-id"
-   CLOUDFLARE_ACCESS_GROUP_NAME = "Your Access Group Name"
-   INACTIVITY_DAYS_THRESHOLD = "7"
-   DEBUG = "false"
+   CHATWOOT_URL=https://your-chatwoot-instance.com
+   CHATWOOT_ACCOUNT_ID=your-chatwoot-account-id
+   CHATWOOT_API_KEY=your-chatwoot-api-key
+   CLOUDFLARE_API_TOKEN=your-cloudflare-api-token
+   CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
+   CLOUDFLARE_ACCESS_GROUP_ID=your-cloudflare-access-group-id
+   CLOUDFLARE_ACCESS_GROUP_NAME=Your Access Group Name
+   INACTIVITY_DAYS_THRESHOLD=7
+   DEBUG=false
    ```
 
    Replace the placeholder values with your actual configuration.
 
-5. Add your secrets using Wrangler:
+3. Build the Docker image:
    ```
-   wrangler secret put CHATWOOT_API_KEY
-   wrangler secret put CLOUDFLARE_API_TOKEN
+   docker build -t chatwoot-cloudflare-sync .
    ```
 
-6. Deploy the worker:
+4. Run the Docker container:
    ```
-   wrangler deploy
+   docker run -d -p 8000:8000 --env-file .env chatwoot-cloudflare-sync
    ```
+
+4. Alternatively, you can use Docker Compose to run the container:
+   ```
+   docker-compose up -d
+   ```
+
+   This will build the image if necessary and start the container in detached mode.
 
 ## Usage
 
-The worker will run on a schedule or can be triggered manually through the Cloudflare dashboard. It will synchronize users between Chatwoot and Cloudflare Access based on the configured settings.
+The application exposes a FastAPI endpoint at `http://localhost:8000/`. You can trigger the synchronization by sending a GET request to this endpoint.
+
+To set up automatic synchronization, you can use a cron job or a scheduling service to periodically call this endpoint.
 
 ## Development
 
-To run the worker locally for development:
+To run the application locally for development:
 
-1. Create a `.dev.vars` file in the project root with your secrets:
+1. Install the required dependencies:
    ```
-   CHATWOOT_API_KEY=your_chatwoot_api_key
-   CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
-   ```
-
-2. Run the worker locally:
-   ```
-   wrangler dev
+   pip install -r requirements.txt
    ```
 
-This will start a local development server that you can use to test and debug your worker. The `.dev.vars` file will be used to provide the necessary secrets during local development, without exposing them in your `wrangler.toml` file.
+2. Run the FastAPI application:
+   ```
+   python src/api.py
+   ```
 
-Note: Make sure to add `.dev.vars` to your `.gitignore` file to prevent accidentally committing sensitive information to your repository.
+This will start a local development server at `http://localhost:8000/`.
 
 ## Contributing
 
