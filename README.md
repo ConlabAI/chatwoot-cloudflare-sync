@@ -52,6 +52,26 @@ This application synchronizes users between Chatwoot and Cloudflare Access, runn
 
    This will build the image if necessary and start the container in detached mode.
 
+5. Pulling pre-built Docker images:
+
+   You can pull the pre-built Docker image from either Docker Hub or GitHub Container Registry:
+
+   - From Docker Hub:
+     ```
+     docker pull conlab/chatwoot-cloudflare-sync:latest
+     ```
+
+   - From GitHub Container Registry:
+     ```
+     docker pull ghcr.io/conlabai/chatwoot-cloudflare-sync:latest
+     ```
+
+   After pulling the image, you can run it using:
+   ```
+   docker run -d -p 8000:8000 --env-file .env <IMAGE_NAME>
+   ```
+   Replace `<IMAGE_NAME>` with the full image name you pulled (e.g., `conlab/chatwoot-cloudflare-sync:latest` or `ghcr.io/conlabai/chatwoot-cloudflare-sync:latest`).
+
 ## Usage
 
 The application exposes a FastAPI endpoint at `http://localhost:8000/`. You can trigger the synchronization by sending a GET request to this endpoint.
