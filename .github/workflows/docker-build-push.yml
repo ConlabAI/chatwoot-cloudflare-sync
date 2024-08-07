@@ -28,6 +28,6 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_REGISTRY_NAME }}/${{ github.repository }}:latest
+        tags: ${{ secrets.DOCKERHUB_REGISTRY_NAME }}/${{ github.event.repository.name }}:latest
         cache-to: type=gha,mode=max
         cache-from: type=gha
