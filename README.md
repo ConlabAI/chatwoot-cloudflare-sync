@@ -89,7 +89,7 @@ To run the application locally for development:
 
 2. Run the FastAPI application:
    ```
-   python src/api.py
+   fastapi run src/api.py
    ```
 
 This will start a local development server at `http://localhost:8000/`.
